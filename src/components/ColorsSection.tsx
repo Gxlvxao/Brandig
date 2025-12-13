@@ -9,38 +9,44 @@ const ColorsSection = () => {
   const primaryColors = [{
     name: 'Preto Profundo',
     hex: '#0A0A0B',
-    hsl: '240° 6% 4%',
+    rgb: '10, 10, 11',
+    cmyk: '9, 9, 0, 96',
     usage: 'Fundo principal',
     gradientStops: ['#0A0A0B', '#121211', '#1A1917', '#121211', '#0A0A0B']
   }, {
     name: 'Branco Quente',
     hex: '#E8E4DD',
-    hsl: '40° 10% 90%',
+    rgb: '232, 228, 221',
+    cmyk: '0, 2, 5, 9',
     usage: 'Texto principal',
     gradientStops: ['#E8E4DD', '#EDE9E3', '#F5F2ED', '#EDE9E3', '#E8E4DD']
   }, {
     name: 'Amarelo Luz',
     hex: '#D4A842',
-    hsl: '45° 80% 55%',
+    rgb: '212, 168, 66',
+    cmyk: '0, 21, 69, 17',
     usage: 'Destaque e acentos',
     gradientStops: ['#D4A842', '#DCB54E', '#E8C35A', '#DCB54E', '#D4A842']
   }];
   const secondaryColors = [{
     name: 'Cinza Quente',
     hex: '#1A1917',
-    hsl: '40° 4% 12%',
+    rgb: '26, 25, 23',
+    cmyk: '0, 4, 12, 90',
     usage: 'Superfícies',
     gradientStops: ['#1A1917', '#222120', '#2A2928', '#222120', '#1A1917']
   }, {
     name: 'Cinza Médio',
     hex: '#8B8680',
-    hsl: '40° 6% 50%',
+    rgb: '139, 134, 128',
+    cmyk: '0, 4, 8, 45',
     usage: 'Texto secundário',
     gradientStops: ['#8B8680', '#979289', '#A39E95', '#979289', '#8B8680']
   }, {
     name: 'Cinza Claro',
     hex: '#C2BBB0',
-    hsl: '40° 10% 75%',
+    rgb: '194, 187, 176',
+    cmyk: '0, 4, 9, 24',
     usage: 'Texto terciário',
     gradientStops: ['#C2BBB0', '#CBC5BB', '#D4CFC6', '#CBC5BB', '#C2BBB0']
   }];
@@ -64,10 +70,13 @@ const ColorsSection = () => {
       }} />)}
       </div>
       <div className="p-4 md:p-6">
-        <h4 className="font-heading font-medium text-foreground mb-1">{color.name}</h4>
-        <p className="text-xs text-muted-foreground font-mono mb-2">{color.hex}</p>
-        <p className="text-xs text-muted-foreground">{color.hsl}</p>
-        <p className="text-sm text-accent mt-3">{color.usage}</p>
+        <h4 className="font-heading font-medium text-foreground mb-3">{color.name}</h4>
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground font-mono"><span className="text-accent">HEX</span> {color.hex}</p>
+          <p className="text-xs text-muted-foreground font-mono"><span className="text-accent">RGB</span> {color.rgb}</p>
+          <p className="text-xs text-muted-foreground font-mono"><span className="text-accent">CMYK</span> {color.cmyk}</p>
+        </div>
+        <p className="text-sm text-accent mt-4">{color.usage}</p>
       </div>
     </div>;
   return <section id="colors" ref={ref} className="section-padding relative">
