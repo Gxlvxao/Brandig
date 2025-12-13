@@ -1,18 +1,14 @@
 import { ChevronDown } from 'lucide-react';
-
 const HeroSection = () => {
   const scrollToIndex = () => {
     const element = document.querySelector('#index');
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-
-  return (
-    <section 
-      id="hero" 
-      className="min-h-screen flex flex-col justify-center items-center relative px-6 py-20 md:px-12"
-    >
+  return <section id="hero" className="min-h-screen flex flex-col justify-center items-center relative px-6 py-20 md:px-12">
       {/* Content */}
       <div className="content-container text-center z-10 flex flex-col items-center">
         {/* Overline */}
@@ -22,7 +18,9 @@ const HeroSection = () => {
         
         {/* Main Title */}
         <h1 className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] tracking-tight mb-6 md:mb-8 fade-in-up stagger-2">
-          <span className="text-gradient">SENSORIAL</span>
+          <span className="text-gradient my-[15px] text-7xl">Your branding, your future,
+is Here
+        </span>
         </h1>
         
         {/* Subtitle */}
@@ -41,15 +39,10 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <button 
-        onClick={scrollToIndex}
-        className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-300 fade-in-up stagger-5"
-      >
+      <button onClick={scrollToIndex} className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-300 fade-in-up stagger-5">
         <span className="text-xs tracking-widest uppercase">Explorar</span>
         <ChevronDown className="w-5 h-5 scroll-indicator" />
       </button>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
