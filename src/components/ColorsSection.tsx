@@ -9,31 +9,49 @@ const ColorsSection = () => {
       hex: '#0A0A0B', 
       hsl: '240° 6% 4%', 
       usage: 'Fundo principal',
-      gradient: 'linear-gradient(135deg, #0A0A0B 0%, #1A1917 50%, #0A0A0B 100%)'
+      gradientStops: ['#0A0A0B', '#121211', '#1A1917', '#121211', '#0A0A0B']
     },
     { 
       name: 'Branco Quente', 
       hex: '#E8E4DD', 
       hsl: '40° 10% 90%', 
       usage: 'Texto principal',
-      gradient: 'linear-gradient(135deg, #E8E4DD 0%, #F5F2ED 50%, #E8E4DD 100%)'
+      gradientStops: ['#E8E4DD', '#EDE9E3', '#F5F2ED', '#EDE9E3', '#E8E4DD']
     },
     { 
       name: 'Amarelo Luz', 
       hex: '#D4A842', 
       hsl: '45° 80% 55%', 
       usage: 'Destaque e acentos',
-      gradient: 'linear-gradient(135deg, #D4A842 0%, #E8C35A 50%, #D4A842 100%)'
+      gradientStops: ['#D4A842', '#DCB54E', '#E8C35A', '#DCB54E', '#D4A842']
     },
   ];
 
   const secondaryColors = [
-    { name: 'Cinza Quente', hex: '#1A1917', hsl: '40° 4% 12%', usage: 'Superfícies' },
-    { name: 'Cinza Médio', hex: '#8B8680', hsl: '40° 6% 50%', usage: 'Texto secundário' },
-    { name: 'Cinza Claro', hex: '#C2BBB0', hsl: '40° 10% 75%', usage: 'Texto terciário' },
+    { 
+      name: 'Cinza Quente', 
+      hex: '#1A1917', 
+      hsl: '40° 4% 12%', 
+      usage: 'Superfícies',
+      gradientStops: ['#1A1917', '#222120', '#2A2928', '#222120', '#1A1917']
+    },
+    { 
+      name: 'Cinza Médio', 
+      hex: '#8B8680', 
+      hsl: '40° 6% 50%', 
+      usage: 'Texto secundário',
+      gradientStops: ['#8B8680', '#979289', '#A39E95', '#979289', '#8B8680']
+    },
+    { 
+      name: 'Cinza Claro', 
+      hex: '#C2BBB0', 
+      hsl: '40° 10% 75%', 
+      usage: 'Texto terciário',
+      gradientStops: ['#C2BBB0', '#CBC5BB', '#D4CFC6', '#CBC5BB', '#C2BBB0']
+    },
   ];
 
-  const PrimaryColorCard = ({ color, index }: { color: typeof primaryColors[0], index: number }) => (
+  const ColorCard = ({ color, index }: { color: typeof primaryColors[0], index: number }) => (
     <div 
       className="rounded-2xl overflow-hidden bg-card border border-border/50 card-lift"
       style={{ transitionDelay: `${(index + 2) * 0.1}s` }}
@@ -43,29 +61,16 @@ const ColorsSection = () => {
         className="aspect-[3/2] w-full"
         style={{ backgroundColor: color.hex }}
       />
-      {/* Gradient Sample */}
-      <div 
-        className="h-16 w-full"
-        style={{ background: color.gradient }}
-      />
-      <div className="p-4 md:p-6">
-        <h4 className="font-heading font-medium text-foreground mb-1">{color.name}</h4>
-        <p className="text-xs text-muted-foreground font-mono mb-2">{color.hex}</p>
-        <p className="text-xs text-muted-foreground">{color.hsl}</p>
-        <p className="text-sm text-accent mt-3">{color.usage}</p>
+      {/* 5 Gradient Stop Blocks */}
+      <div className="flex w-full">
+        {color.gradientStops.map((stop, i) => (
+          <div 
+            key={i}
+            className="flex-1 h-10"
+            style={{ backgroundColor: stop }}
+          />
+        ))}
       </div>
-    </div>
-  );
-
-  const SecondaryColorCard = ({ color, index }: { color: typeof secondaryColors[0], index: number }) => (
-    <div 
-      className="rounded-2xl overflow-hidden bg-card border border-border/50 card-lift"
-      style={{ transitionDelay: `${(index + 2) * 0.1}s` }}
-    >
-      <div 
-        className="aspect-[3/2] w-full"
-        style={{ backgroundColor: color.hex }}
-      />
       <div className="p-4 md:p-6">
         <h4 className="font-heading font-medium text-foreground mb-1">{color.name}</h4>
         <p className="text-xs text-muted-foreground font-mono mb-2">{color.hex}</p>
@@ -94,7 +99,7 @@ const ColorsSection = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {primaryColors.map((color, index) => (
-              <PrimaryColorCard key={color.name} color={color} index={index} />
+              <ColorCard key={color.name} color={color} index={index} />
             ))}
           </div>
         </div>
@@ -105,7 +110,7 @@ const ColorsSection = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {secondaryColors.map((color, index) => (
-              <SecondaryColorCard key={color.name} color={color} index={index} />
+              <ColorCard key={color.name} color={color} index={index} />
             ))}
           </div>
         </div>
