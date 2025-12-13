@@ -104,33 +104,33 @@ const ApplicationSection = () => {
                 style={{ pointerEvents: isActive ? 'auto' : 'none' }}
               >
                 {/* Mockup Container */}
-                <div className="w-full max-w-4xl mx-auto px-8 md:px-16">
-                  <div className="aspect-[16/10] rounded-3xl bg-card border border-border/30 overflow-hidden relative group">
+                <div className="w-full h-full flex items-center justify-center px-8 md:px-16 lg:px-24 py-24">
+                  <div className="w-full max-w-6xl h-full max-h-[70vh] rounded-2xl bg-card border border-border/30 overflow-hidden relative group">
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-[0.03]">
-                      <div className="absolute inset-8 border border-current rounded-2xl" />
-                      <div className="absolute inset-16 border border-current rounded-xl" />
-                      <div className="absolute inset-24 border border-current rounded-lg" />
+                      <div className="absolute inset-6 border border-current rounded-xl" />
+                      <div className="absolute inset-12 border border-current rounded-lg" />
+                      <div className="absolute inset-20 border border-current rounded-md" />
                     </div>
                     
                     {/* Center Logo */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground/20 group-hover:text-foreground/30 transition-colors duration-500">
+                      <span className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground/20 group-hover:text-foreground/30 transition-colors duration-500">
                         SENSORIAL
                       </span>
                     </div>
                     
                     {/* Mockup Number */}
-                    <div className="absolute top-6 left-6 md:top-8 md:left-8">
+                    <div className="absolute top-4 left-4 md:top-6 md:left-6">
                       <span className="text-xs tracking-[0.3em] uppercase text-accent">{mockup.number}</span>
                     </div>
                     
                     {/* Mockup Info */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 bg-gradient-to-t from-card via-card/80 to-transparent">
-                      <h3 className="font-heading text-2xl md:text-3xl font-semibold text-foreground mb-2">
+                    <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-card via-card/80 to-transparent">
+                      <h3 className="font-heading text-xl md:text-2xl font-semibold text-foreground mb-1">
                         {mockup.title}
                       </h3>
-                      <p className="text-base md:text-lg text-muted-foreground">
+                      <p className="text-sm md:text-base text-muted-foreground">
                         {mockup.description}
                       </p>
                     </div>
