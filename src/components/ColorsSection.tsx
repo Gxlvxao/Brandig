@@ -4,9 +4,27 @@ const ColorsSection = () => {
   const { ref, isInView } = useInView({ threshold: 0.2 });
 
   const primaryColors = [
-    { name: 'Preto Profundo', hex: '#0A0A0B', hsl: '240° 6% 4%', usage: 'Fundo principal' },
-    { name: 'Branco Quente', hex: '#E8E4DD', hsl: '40° 10% 90%', usage: 'Texto principal' },
-    { name: 'Amarelo Luz', hex: '#D4A842', hsl: '45° 80% 55%', usage: 'Destaque e acentos' },
+    { 
+      name: 'Preto Profundo', 
+      hex: '#0A0A0B', 
+      hsl: '240° 6% 4%', 
+      usage: 'Fundo principal',
+      gradient: 'linear-gradient(135deg, #0A0A0B 0%, #1A1917 50%, #0A0A0B 100%)'
+    },
+    { 
+      name: 'Branco Quente', 
+      hex: '#E8E4DD', 
+      hsl: '40° 10% 90%', 
+      usage: 'Texto principal',
+      gradient: 'linear-gradient(135deg, #E8E4DD 0%, #F5F2ED 50%, #E8E4DD 100%)'
+    },
+    { 
+      name: 'Amarelo Luz', 
+      hex: '#D4A842', 
+      hsl: '45° 80% 55%', 
+      usage: 'Destaque e acentos',
+      gradient: 'linear-gradient(135deg, #D4A842 0%, #E8C35A 50%, #D4A842 100%)'
+    },
   ];
 
   const secondaryColors = [
@@ -15,7 +33,31 @@ const ColorsSection = () => {
     { name: 'Cinza Claro', hex: '#C2BBB0', hsl: '40° 10% 75%', usage: 'Texto terciário' },
   ];
 
-  const ColorCard = ({ color, index }: { color: typeof primaryColors[0], index: number }) => (
+  const PrimaryColorCard = ({ color, index }: { color: typeof primaryColors[0], index: number }) => (
+    <div 
+      className="rounded-2xl overflow-hidden bg-card border border-border/50 card-lift"
+      style={{ transitionDelay: `${(index + 2) * 0.1}s` }}
+    >
+      {/* Solid Color */}
+      <div 
+        className="aspect-[3/2] w-full"
+        style={{ backgroundColor: color.hex }}
+      />
+      {/* Gradient Sample */}
+      <div 
+        className="h-16 w-full"
+        style={{ background: color.gradient }}
+      />
+      <div className="p-4 md:p-6">
+        <h4 className="font-heading font-medium text-foreground mb-1">{color.name}</h4>
+        <p className="text-xs text-muted-foreground font-mono mb-2">{color.hex}</p>
+        <p className="text-xs text-muted-foreground">{color.hsl}</p>
+        <p className="text-sm text-accent mt-3">{color.usage}</p>
+      </div>
+    </div>
+  );
+
+  const SecondaryColorCard = ({ color, index }: { color: typeof secondaryColors[0], index: number }) => (
     <div 
       className="rounded-2xl overflow-hidden bg-card border border-border/50 card-lift"
       style={{ transitionDelay: `${(index + 2) * 0.1}s` }}
@@ -52,7 +94,7 @@ const ColorsSection = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {primaryColors.map((color, index) => (
-              <ColorCard key={color.name} color={color} index={index} />
+              <PrimaryColorCard key={color.name} color={color} index={index} />
             ))}
           </div>
         </div>
@@ -63,7 +105,7 @@ const ColorsSection = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {secondaryColors.map((color, index) => (
-              <ColorCard key={color.name} color={color} index={index} />
+              <SecondaryColorCard key={color.name} color={color} index={index} />
             ))}
           </div>
         </div>
