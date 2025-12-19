@@ -1,39 +1,17 @@
 import { useInView } from '../hooks/useInView';
 import { Download, FileText, Image, Package } from 'lucide-react';
+import { useBrandStore } from '@/store/useBrandStore';
+
+// Mapa de ícones disponíveis
+const iconMap = {
+  Package: Package,
+  Image: Image,
+  FileText: FileText
+};
 
 const DownloadsSection = () => {
   const { ref, isInView } = useInView({ threshold: 0.2 });
-
-  const downloads = [
-    { 
-      icon: Package, 
-      title: 'Kit Completo', 
-      description: 'Todos os ficheiros da marca em formato ZIP',
-      size: '45 MB',
-      format: 'ZIP'
-    },
-    { 
-      icon: Image, 
-      title: 'Logótipos', 
-      description: 'Versões em PNG, SVG e EPS',
-      size: '12 MB',
-      format: 'ZIP'
-    },
-    { 
-      icon: FileText, 
-      title: 'Brand Book PDF', 
-      description: 'Documento completo em alta resolução',
-      size: '8 MB',
-      format: 'PDF'
-    },
-    { 
-      icon: FileText, 
-      title: 'Fontes', 
-      description: 'Outfit e Inter em todos os pesos',
-      size: '2 MB',
-      format: 'ZIP'
-    },
-  ];
+  const { downloads } = useBrandStore();
 
   return (
     <section 
@@ -44,24 +22,26 @@ const DownloadsSection = () => {
       <div className="content-container">
         {/* Section Header */}
         <div className={`mb-12 md:mb-20 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-3">07</p>
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-semibold">Downloads</h2>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-3">{downloads.sectionNumber}</p>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-semibold">{downloads.title}</h2>
         </div>
 
         {/* Description */}
         <div className={`mb-12 md:mb-16 max-w-2xl transition-all duration-700 delay-100 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Aceda a todos os recursos da marca. Ficheiros otimizados para impressão e digital.
+            {downloads.description}
           </p>
         </div>
 
         {/* Downloads Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-          {downloads.map((item, index) => {
-            const Icon = item.icon;
+          {downloads.items.map((item, index) => {
+            // Pega o ícone correto baseado no nome, ou usa FileText como fallback
+            const Icon = iconMap[item.iconName as keyof typeof iconMap] || FileText;
+            
             return (
               <button
-                key={item.title}
+                key={index}
                 className={`group text-left p-6 md:p-8 rounded-2xl bg-card border border-border/50 card-lift transition-all duration-700 ${
                   isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}

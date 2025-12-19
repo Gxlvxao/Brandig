@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Volume2, VolumeX } from 'lucide-react';
+import { useBrandStore } from '@/store/useBrandStore';
 
 interface NavigationProps {
   onSoundToggle: () => void;
@@ -9,6 +10,7 @@ interface NavigationProps {
 const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { navigation } = useBrandStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,23 +37,20 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
 
   return (
     <>
-      {/* Fixed Navigation */}
       <nav
         className={`fixed top-4 left-4 right-4 md:top-6 md:left-6 md:right-6 z-50 transition-all duration-500 ${
           isScrolled ? 'top-3 md:top-4' : ''
         }`}
       >
         <div className="glass rounded-2xl px-4 py-3 md:px-6 md:py-4 flex items-center justify-between shadow-soft">
-          {/* Logo */}
           <a 
             href="#hero" 
             onClick={(e) => { e.preventDefault(); scrollToSection('#hero'); }}
             className="font-heading font-semibold text-lg md:text-xl tracking-tight text-foreground hover:text-accent transition-colors duration-300"
           >
-            SENSORIAL
+            {navigation.logoText}
           </a>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             {menuItems.map((item) => (
               <a
@@ -65,7 +64,6 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
               </a>
             ))}
             
-            {/* Sound Toggle */}
             <button
               onClick={onSoundToggle}
               className="p-2 rounded-lg hover:bg-secondary transition-colors duration-300"
@@ -79,7 +77,6 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-3">
             <button
               onClick={onSoundToggle}
@@ -108,7 +105,6 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <>
           <div 

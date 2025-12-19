@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import IndexSection from '@/components/IndexSection';
@@ -12,31 +11,27 @@ import ApplicationSection from '@/components/ApplicationSection';
 import DownloadsSection from '@/components/DownloadsSection';
 import CreditsSection from '@/components/CreditsSection';
 import AmbientGlow from '@/components/AmbientGlow';
+import { useAudio } from '@/hooks/useAudio';
+// Importação do Editor
+import { BrandEditor } from '@/components/editor/BrandEditor';
 
 const Index = () => {
-  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
-
-  const handleSoundToggle = () => {
-    setIsSoundEnabled(!isSoundEnabled);
-    // Sound implementation would go here
-  };
+  // Use um link direto para o MP3. 
+  // DICA: Coloque o arquivo 'ambient-sound.mp3' na pasta /public do seu projeto.
+  const { isPlaying, toggle } = useAudio('/ambient-sound.mp3');
 
   return (
-    <div className="relative min-h-screen bg-background overflow-x-hidden">
-      {/* Ambient Glow Effects */}
+    <div className="relative min-h-screen bg-background">
       <AmbientGlow />
       
-      {/* Navigation */}
       <Navigation 
-        onSoundToggle={handleSoundToggle}
-        isSoundEnabled={isSoundEnabled}
+        onSoundToggle={toggle}
+        isSoundEnabled={isPlaying}
       />
       
-      {/* Main Content */}
       <main className="relative z-10">
         <HeroSection />
         
-        {/* Divider */}
         <div className="content-container px-6 md:px-12 lg:px-20">
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         </div>
@@ -57,7 +52,6 @@ const Index = () => {
         <DownloadsSection />
         <CreditsSection />
         
-        {/* Footer */}
         <footer className="section-padding border-t border-border/50">
           <div className="content-container text-center">
             <p className="text-sm text-muted-foreground">
@@ -66,6 +60,9 @@ const Index = () => {
           </div>
         </footer>
       </main>
+
+      {/* O Editor fica aqui, flutuando sobre tudo */}
+      <BrandEditor />
     </div>
   );
 };
