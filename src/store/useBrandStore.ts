@@ -1,4 +1,6 @@
 import { create } from 'zustand'
+import { api } from '@/lib/api' // Importando nossa conexão com o Laravel
+import { toast } from "sonner"   // Para avisos visuais de sucesso/erro
 
 // --- Interfaces das Seções ---
 
@@ -46,17 +48,17 @@ interface IdentityConfig {
   logoSectionTitle: string
   primaryLogoText: string
   primaryLogoLabel: string
-  primaryLogoImage?: string // Adicionado: URL da imagem do logo
+  primaryLogoImage?: string 
 
   invertedLogoText: string
   invertedLogoLabel: string
-  invertedLogoImage?: string // Adicionado: URL da imagem do logo invertido
+  invertedLogoImage?: string 
 
   // Área de Proteção
   clearSpaceTitle: string
   clearSpaceLogoText: string
   clearSpaceDescription: string
-  clearSpaceImage?: string // Adicionado: Imagem do diagrama de proteção
+  clearSpaceImage?: string 
 
   // Dimensões
   minSizeTitle: string
@@ -112,7 +114,7 @@ interface ApplicationItem {
   title: string
   description: string
   number: string
-  image?: string // Adicionado: URL da imagem do mockup
+  image?: string 
 }
 
 interface ApplicationConfig {
@@ -127,7 +129,7 @@ interface DownloadItem {
   description: string
   size: string
   format: string
-  fileUrl?: string // Adicionado: URL do arquivo para download
+  fileUrl?: string 
 }
 
 interface DownloadsConfig {
@@ -136,8 +138,6 @@ interface DownloadsConfig {
   description: string
   items: DownloadItem[]
 }
-
-// --- Nova Interface (Credits) ---
 
 interface TeamMember {
   role: string
@@ -174,7 +174,7 @@ interface BrandState {
   credits: CreditsConfig
   navigation: NavigationConfig
   
-  // Actions
+  // Actions de UI
   toggleEditorMode: () => void
   updateHero: (data: Partial<HeroConfig>) => void
   updateIntroduction: (data: Partial<IntroductionConfig>) => void
@@ -187,12 +187,17 @@ interface BrandState {
   updateDownloads: (data: Partial<DownloadsConfig>) => void
   updateCredits: (data: Partial<CreditsConfig>) => void
   updateNavigation: (data: Partial<NavigationConfig>) => void
+
+  // Actions de API (Backend)
+  loadProject: (slug: string) => Promise<void>
+  saveProject: (slug: string) => Promise<void>
 }
 
-export const useBrandStore = create<BrandState>((set) => ({
+// Note o uso de (set, get) aqui para permitir ler o estado atual no saveProject
+export const useBrandStore = create<BrandState>((set, get) => ({
   isEditorMode: true,
   
-  // --- Dados Iniciais ---
+  // --- Dados Iniciais (Padrão) ---
 
   hero: {
     titleLine1: 'Your branding, your future,',
@@ -250,16 +255,16 @@ export const useBrandStore = create<BrandState>((set) => ({
     logoSectionTitle: 'Logótipo',
     primaryLogoText: 'SENSORIAL',
     primaryLogoLabel: 'Versão Principal',
-    primaryLogoImage: '', // Inicializado vazio
+    primaryLogoImage: '', 
 
     invertedLogoText: 'SENSORIAL',
     invertedLogoLabel: 'Versão Invertida',
-    invertedLogoImage: '', // Inicializado vazio
+    invertedLogoImage: '', 
 
     clearSpaceTitle: 'Área de Proteção',
     clearSpaceLogoText: 'SENSORIAL',
     clearSpaceDescription: 'A letra "S" define a área mínima de proteção em redor do logótipo.',
-    clearSpaceImage: '', // Inicializado vazio
+    clearSpaceImage: '', 
 
     minSizeTitle: 'Dimensões Mínimas',
     minSizePrintLabel: 'Impressão',
@@ -434,7 +439,7 @@ export const useBrandStore = create<BrandState>((set) => ({
     logoText: 'SENSORIAL'
   },
 
-  // --- Funções de Atualização ---
+  // --- Funções de Atualização (UI) ---
 
   toggleEditorMode: () => set((state) => ({ isEditorMode: !state.isEditorMode })),
   
@@ -448,5 +453,53 @@ export const useBrandStore = create<BrandState>((set) => ({
   updateApplication: (data) => set((state) => ({ application: { ...state.application, ...data } })),
   updateDownloads: (data) => set((state) => ({ downloads: { ...state.downloads, ...data } })),
   updateCredits: (data) => set((state) => ({ credits: { ...state.credits, ...data } })),
-  updateNavigation: (data) => set((state) => ({ navigation: { ...state.navigation, ...data } }))
+  updateNavigation: (data) => set((state) => ({ navigation: { ...state.navigation, ...data } })),
+
+  // --- Funções de Integração (API) ---
+
+  loadProject: async (slug: string) => {
+    try {
+      const response = await api.get(`/project/${slug}`);
+      const settings = response.data.settings; // O Laravel retorna { settings: { ... } }
+      
+      if (settings) {
+        set((state) => ({
+          ...state,
+          ...settings // Substitui o estado atual pelo que veio do banco
+        }));
+        console.log("Projeto carregado via API");
+      }
+    } catch (error) {
+      console.log("Projeto novo ou erro ao carregar (ignorável no início).");
+    }
+  },
+
+  saveProject: async (slug: string) => {
+    const state = get(); // Pega o estado atual completo
+    
+    // Montamos o objeto limpo para salvar (sem funções)
+    const projectData = {
+      hero: state.hero,
+      introduction: state.introduction,
+      aboutBrand: state.aboutBrand,
+      brandSection: state.brandSection,
+      identity: state.identity,
+      typography: state.typography,
+      colors: state.colors,
+      application: state.application,
+      downloads: state.downloads,
+      credits: state.credits,
+      navigation: state.navigation
+    };
+
+    try {
+      await api.post(`/project/${slug}`, {
+        settings: projectData
+      });
+      toast.success("Alterações salvas na nuvem com sucesso!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao salvar o projeto. Verifique o servidor.");
+    }
+  }
 }))

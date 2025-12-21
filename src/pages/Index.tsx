@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import IndexSection from '@/components/IndexSection';
@@ -12,13 +13,17 @@ import DownloadsSection from '@/components/DownloadsSection';
 import CreditsSection from '@/components/CreditsSection';
 import AmbientGlow from '@/components/AmbientGlow';
 import { useAudio } from '@/hooks/useAudio';
-// Importação do Editor
 import { BrandEditor } from '@/components/editor/BrandEditor';
+import { useBrandStore } from '@/store/useBrandStore';
 
 const Index = () => {
-  // Use um link direto para o MP3. 
-  // DICA: Coloque o arquivo 'ambient-sound.mp3' na pasta /public do seu projeto.
   const { isPlaying, toggle } = useAudio('/ambient-sound.mp3');
+  const loadProject = useBrandStore((state) => state.loadProject);
+
+  useEffect(() => {
+    // Carrega os dados do backend assim que a página monta
+    loadProject('demo-brand');
+  }, [loadProject]);
 
   return (
     <div className="relative min-h-screen bg-background">
@@ -61,7 +66,6 @@ const Index = () => {
         </footer>
       </main>
 
-      {/* O Editor fica aqui, flutuando sobre tudo */}
       <BrandEditor />
     </div>
   );
