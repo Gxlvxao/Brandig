@@ -1,15 +1,20 @@
 import axios from 'axios';
 
-// Configura a URL base do seu Laravel
+// Agora ele tenta ler a variável de ambiente do Vite primeiro.
+// Se não achar (no seu PC local), usa o localhost como fallback.
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
 export const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+  // Importante para manter a sessão/cookies seguros se precisar no futuro
+  withCredentials: true, 
 });
 
-// Interceptor para logs de erro (opcional, mas ajuda muito no debug)
+// Interceptor para logs de erro (ajuda muito no debug)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
