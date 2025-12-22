@@ -23,8 +23,8 @@ const FileUpload = ({ label, value, onChange, accept = "image/*" }: { label: str
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error("Arquivo muito grande. Limite de 100MB.");
+    if (file.size > 500 * 1024 * 1024) {
+      toast.error("Arquivo muito grande. Limite de 500MB.");
       return;
     }
 
