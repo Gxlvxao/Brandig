@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Volume2, VolumeX } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useBrandStore } from '@/store/useBrandStore';
+import { useSoundEffect } from '@/hooks/useSoundEffect';
 
-interface NavigationProps {
-  onSoundToggle: () => void;
-  isSoundEnabled: boolean;
-}
-
-const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
+const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { navigation } = useBrandStore();
+  const { playHover } = useSoundEffect();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,18 +42,16 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
         <div className="glass rounded-2xl px-4 py-3 md:px-6 md:py-4 flex items-center justify-between shadow-soft">
           <a 
             href="#hero" 
+            onMouseEnter={playHover}
             onClick={(e) => { e.preventDefault(); scrollToSection('#hero'); }}
-            // ADICIONADO: 'flex items-center gap-3' para alinhar imagem e texto lado a lado
-            className="flex items-center gap-3 font-heading font-semibold text-lg md:text-xl tracking-tight text-foreground hover:text-accent transition-colors duration-300"
+            className="flex items-center gap-3 font-heading font-semibold text-lg md:text-xl tracking-tight text-foreground hover:text-accent transition-colors duration-300 min-w-0"
           >
-            {/* Imagem (Se existir) */}
             {navigation.logoImage && (
-              <img src={navigation.logoImage} alt={navigation.logoText} className="h-8 md:h-10 w-auto object-contain" />
+              <img src={navigation.logoImage} alt={navigation.logoText} className="h-8 md:h-10 w-auto object-contain shrink-0" />
             )}
             
-            {/* Texto (Se não tiver imagem OU se a opção 'showBoth' estiver ativada) */}
             {(navigation.showBoth || !navigation.logoImage) && (
-              <span>{navigation.logoText}</span>
+              <span className="truncate">{navigation.logoText}</span>
             )}
           </a>
 
@@ -65,6 +60,7 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
               <a
                 key={item.label}
                 href={item.href}
+                onMouseEnter={playHover}
                 onClick={(e) => { e.preventDefault(); scrollToSection(item.href); }}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-300 relative group"
               >
@@ -72,33 +68,9 @@ const Navigation = ({ onSoundToggle, isSoundEnabled }: NavigationProps) => {
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
-            
-            <button
-              onClick={onSoundToggle}
-              className="p-2 rounded-lg hover:bg-secondary transition-colors duration-300"
-              aria-label={isSoundEnabled ? 'Desativar som' : 'Ativar som'}
-            >
-              {isSoundEnabled ? (
-                <Volume2 className="w-4 h-4 text-accent" />
-              ) : (
-                <VolumeX className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
           </div>
 
           <div className="flex md:hidden items-center gap-3">
-            <button
-              onClick={onSoundToggle}
-              className="p-2 rounded-lg hover:bg-secondary transition-colors duration-300"
-              aria-label={isSoundEnabled ? 'Desativar som' : 'Ativar som'}
-            >
-              {isSoundEnabled ? (
-                <Volume2 className="w-4 h-4 text-accent" />
-              ) : (
-                <VolumeX className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
-            
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 rounded-lg hover:bg-secondary transition-colors duration-300"

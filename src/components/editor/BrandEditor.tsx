@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Settings, Save, Palette, Type, Layout, FileText, Image, Users, Upload, Download, Smartphone, Loader2, Home, Plus, Trash2, List } from "lucide-react"; // Adicionei List
+import { Settings, Save, Palette, Type, Layout, FileText, Image, Users, Upload, Download, Smartphone, Loader2, Home, Plus, Trash2, List } from "lucide-react"; 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
 import { api } from "@/lib/api"; 
 import { toast } from "sonner"; 
 
-// Componente de Upload (Mantido igual)
+// Componente de Upload
+// FIX: Agora o 'accept' é passado corretamente para o input file
 const FileUpload = ({ label, value, onChange, accept = "image/*" }: { label: string, value?: string, onChange: (val: string) => void, accept?: string }) => {
   const [isUploading, setIsUploading] = useState(false);
 
@@ -65,7 +66,7 @@ const FileUpload = ({ label, value, onChange, accept = "image/*" }: { label: str
           </Button>
           <Input 
             type="file" 
-            accept={accept}
+            accept={accept} // AQUI ESTÁ O FIX: Usando a prop accept dinamicamente
             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
             onChange={handleUpload}
             disabled={isUploading}
@@ -119,7 +120,6 @@ export const BrandEditor = () => {
                 <ScrollArea className="w-full whitespace-nowrap">
                   <TabsList className="inline-flex w-auto p-1 bg-muted/50 rounded-xl h-auto border">
                     <TabsTrigger value="hero" className="gap-2 py-2.5 px-5"><Home className="w-4 h-4"/> Capa & Nav</TabsTrigger>
-                    {/* NOVA ABA ÍNDICE */}
                     <TabsTrigger value="index" className="gap-2 py-2.5 px-5"><List className="w-4 h-4"/> Índice</TabsTrigger>
                     <TabsTrigger value="intro" className="gap-2 py-2.5 px-5"><Layout className="w-4 h-4"/> Intro</TabsTrigger>
                     <TabsTrigger value="brand" className="gap-2 py-2.5 px-5"><FileText className="w-4 h-4"/> Marca</TabsTrigger>
@@ -137,7 +137,6 @@ export const BrandEditor = () => {
 
               {/* 1. CAPA E NAV */}
               <TabsContent value="hero" className="space-y-6">
-                 {/* ... (Mantido igual ao anterior) ... */}
                  <div className="border p-8 rounded-xl bg-card shadow-sm space-y-6">
                     <h3 className="font-heading text-2xl text-accent border-b pb-4">Navegação</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -160,7 +159,7 @@ export const BrandEditor = () => {
                  </div>
               </TabsContent>
 
-              {/* 2. ÍNDICE (NOVO CONTEÚDO) */}
+              {/* 2. ÍNDICE */}
               <TabsContent value="index" className="space-y-6">
                  <div className="border p-8 rounded-xl bg-card shadow-sm space-y-6">
                     <h3 className="font-heading text-2xl text-accent border-b pb-4">Configuração do Índice</h3>
@@ -174,14 +173,12 @@ export const BrandEditor = () => {
                        <div className="space-y-4">
                           {store.indexSection.items.map((item, idx) => (
                              <div key={idx} className="p-4 border rounded-lg bg-muted/20 grid grid-cols-1 md:grid-cols-2 gap-4 relative">
-                                {/* Campos */}
                                 <div className="space-y-1"><Label className="text-xs">Número</Label><Input value={item.number} onChange={(e) => { const newItems = [...store.indexSection.items]; newItems[idx] = { ...item, number: e.target.value }; store.updateIndexSection({ items: newItems }); }} /></div>
                                 <div className="space-y-1"><Label className="text-xs">Título</Label><Input value={item.title} onChange={(e) => { const newItems = [...store.indexSection.items]; newItems[idx] = { ...item, title: e.target.value }; store.updateIndexSection({ items: newItems }); }} /></div>
                                 <div className="space-y-1"><Label className="text-xs">Subtítulo</Label><Input value={item.subtitle} onChange={(e) => { const newItems = [...store.indexSection.items]; newItems[idx] = { ...item, subtitle: e.target.value }; store.updateIndexSection({ items: newItems }); }} /></div>
                                 <div className="space-y-1"><Label className="text-xs">Link (#id)</Label><Input value={item.href} className="font-mono text-accent" onChange={(e) => { const newItems = [...store.indexSection.items]; newItems[idx] = { ...item, href: e.target.value }; store.updateIndexSection({ items: newItems }); }} /></div>
                              </div>
                           ))}
-                          <p className="text-xs text-muted-foreground mt-2">* Os links devem corresponder aos IDs das seções (ex: #introduction, #brand, #personas).</p>
                        </div>
                     </div>
                  </div>
@@ -289,7 +286,7 @@ export const BrandEditor = () => {
                       </div>
                     ))}
                   </div>
-                  <p className="text-sm text-muted-foreground italic">* O sistema gera automaticamente as variações de opacidade (100%, 90%, 60%, 40%, 20%).</p>
+                  <p className="text-sm text-muted-foreground italic">* O sistema gera automaticamente as variações de opacidade.</p>
                 </div>
                 <div className="space-y-6 pt-4">
                   <div className="flex justify-between items-center border-b pb-2"><h3 className="text-2xl font-medium">Diretrizes</h3><Button size="sm" variant="outline" onClick={store.addColorGuideline}><Plus className="w-3 h-3 mr-1"/> Add</Button></div>
@@ -301,14 +298,23 @@ export const BrandEditor = () => {
                 </div>
               </TabsContent>
 
-              {/* 8. TIPOGRAFIA */}
+              {/* 8. TIPOGRAFIA (Aba corrigida) */}
               <TabsContent value="typography" className="space-y-6">
                  <div className="border p-8 rounded-xl space-y-6 shadow-sm bg-card">
                     <h3 className="font-heading text-2xl text-accent border-b pb-4">Fonte Principal</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2"><Label>Nome</Label><Input value={store.typography.primaryFontName} onChange={(e) => store.updateTypography({ primaryFontName: e.target.value })} /></div>
-                      <div className="space-y-2"><FileUpload label="Arquivo (.ttf, .otf)" value={store.typography.primaryFontUrl} onChange={(val) => store.updateTypography({ primaryFontUrl: val })} /></div>
+                      <div className="space-y-2">
+                        {/* AQUI ESTAVA O PROBLEMA: Agora aceita explicitamente arquivos de fonte */}
+                        <FileUpload 
+                          label="Arquivo (.ttf, .otf)" 
+                          accept=".ttf,.otf,.woff,.woff2" 
+                          value={store.typography.primaryFontUrl} 
+                          onChange={(val) => store.updateTypography({ primaryFontUrl: val })} 
+                        />
+                      </div>
                     </div>
+                    
                     {/* FONTES EXTRAS */}
                     <div className="space-y-6 pt-6 border-t mt-6">
                        <div className="flex justify-between items-center"><h3 className="font-heading text-xl">Outras Fontes</h3><Button size="sm" variant="outline" onClick={() => { const currentExtras = store.typography.extraFonts || []; store.updateTypography({ extraFonts: [...currentExtras, { name: 'Nova Fonte', url: '' }] }); }}><Plus className="w-4 h-4 mr-2"/> Adicionar</Button></div>
@@ -317,7 +323,14 @@ export const BrandEditor = () => {
                              <div key={idx} className="flex gap-4 items-end border p-4 rounded-lg bg-muted/20 relative group">
                                 <Button size="icon" variant="ghost" className="absolute top-2 right-2 text-destructive h-6 w-6" onClick={() => { const newExtras = [...(store.typography.extraFonts || [])]; newExtras.splice(idx, 1); store.updateTypography({ extraFonts: newExtras }); }}><Trash2 className="w-3 h-3"/></Button>
                                 <div className="flex-1 space-y-2"><Label>Nome</Label><Input value={font.name} onChange={(e) => { const newExtras = [...(store.typography.extraFonts || [])]; newExtras[idx] = { ...font, name: e.target.value }; store.updateTypography({ extraFonts: newExtras }); }} /></div>
-                                <div className="flex-1 space-y-2"><FileUpload label="Arquivo" value={font.url} onChange={(val) => { const newExtras = [...(store.typography.extraFonts || [])]; newExtras[idx] = { ...font, url: val }; store.updateTypography({ extraFonts: newExtras }); }} /></div>
+                                <div className="flex-1 space-y-2">
+                                  <FileUpload 
+                                    label="Arquivo" 
+                                    accept=".ttf,.otf,.woff,.woff2"
+                                    value={font.url} 
+                                    onChange={(val) => { const newExtras = [...(store.typography.extraFonts || [])]; newExtras[idx] = { ...font, url: val }; store.updateTypography({ extraFonts: newExtras }); }} 
+                                  />
+                                </div>
                              </div>
                           ))}
                        </div>

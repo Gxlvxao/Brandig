@@ -9,7 +9,6 @@ interface HeroConfig {
   videoUrl?: string
 }
 
-// Configuração do Índice (ADICIONADO)
 interface IndexItem {
   number: string
   title: string
@@ -183,11 +182,11 @@ interface NavigationConfig {
 interface BrandState {
   isEditorMode: boolean
   hero: HeroConfig
-  indexSection: IndexConfig // ADICIONADO
+  indexSection: IndexConfig 
   introduction: IntroductionConfig
   aboutBrand: AboutBrandConfig
   brandSection: BrandSectionConfig
-  personas: PersonasConfig
+  personas: PersonasConfig 
   identity: IdentityConfig
   typography: TypographyConfig
   colors: ColorsConfig
@@ -199,7 +198,7 @@ interface BrandState {
   toggleEditorMode: () => void
   
   updateHero: (data: Partial<HeroConfig>) => void
-  updateIndexSection: (data: Partial<IndexConfig>) => void // ADICIONADO
+  updateIndexSection: (data: Partial<IndexConfig>) => void 
   updateIntroduction: (data: Partial<IntroductionConfig>) => void
   updateAboutBrand: (data: Partial<AboutBrandConfig>) => void
   updateBrandSection: (data: Partial<BrandSectionConfig>) => void
@@ -249,7 +248,6 @@ export const useBrandStore = create<BrandState>((set, get) => ({
     videoUrl: ''
   },
 
-  // Inicialização do Índice (Incluindo Personas)
   indexSection: {
     sectionNumber: '00',
     title: 'Índice',
@@ -333,28 +331,28 @@ export const useBrandStore = create<BrandState>((set, get) => ({
   typography: {
     sectionNumber: '05',
     title: 'Tipografia',
+    
+    // AQUI ESTAVA O PROBLEMA - Fonte padrão agora é editável e a secundária está VAZIA
     primaryFontTitle: 'Fonte Principal',
-    primaryFontName: 'Outfit',
-    primaryFontUrl: '',
+    primaryFontName: 'Outfit', // Apenas nome display
+    primaryFontUrl: '', 
     primaryFontAlphabet: 'Aa Bb Cc',
     primaryFontCharacters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789',
     weightsTitle: 'Pesos Tipográficos',
     primaryWeights: [
       { name: 'Light', weight: 300 },
       { name: 'Regular', weight: 400 },
-      { name: 'Medium', weight: 500 },
       { name: 'Bold', weight: 700 },
     ],
+
+    // SECUNDÁRIA ZERADA
     secondaryFontTitle: 'Fonte Secundária',
-    secondaryFontName: 'Inter',
+    secondaryFontName: '', 
     secondaryFontUrl: '',
-    secondaryFontAlphabet: 'Aa Bb Cc',
-    secondaryFontDescription: 'Utilizada para corpo de texto.',
-    secondaryWeightsTitle: 'Pesos Tipográficos — Inter',
-    secondaryWeights: [
-      { name: 'Regular', weight: 400 },
-      { name: 'Bold', weight: 700 },
-    ],
+    secondaryFontAlphabet: '',
+    secondaryFontDescription: '',
+    secondaryWeightsTitle: '',
+    secondaryWeights: [], 
     extraFonts: []
   },
 
@@ -430,7 +428,7 @@ export const useBrandStore = create<BrandState>((set, get) => ({
   toggleEditorMode: () => set((state) => ({ isEditorMode: !state.isEditorMode })),
   
   updateHero: (data) => set((state) => ({ hero: { ...state.hero, ...data } })),
-  updateIndexSection: (data) => set((state) => ({ indexSection: { ...state.indexSection, ...data } })), // ADICIONADO
+  updateIndexSection: (data) => set((state) => ({ indexSection: { ...state.indexSection, ...data } })), 
   updateIntroduction: (data) => set((state) => ({ introduction: { ...state.introduction, ...data } })),
   updateAboutBrand: (data) => set((state) => ({ aboutBrand: { ...state.aboutBrand, ...data } })),
   updateBrandSection: (data) => set((state) => ({ brandSection: { ...state.brandSection, ...data } })),
@@ -513,7 +511,6 @@ export const useBrandStore = create<BrandState>((set, get) => ({
 
   saveProject: async (slug: string) => {
     const state = get();
-    // Remover funções e estados temporários antes de salvar
     const { isEditorMode, toggleEditorMode, updateHero, updateIndexSection, updateIntroduction, updateAboutBrand, updateBrandSection, updatePersonas, updateIdentity, updateTypography, updateColors, updateApplication, updateDownloads, updateCredits, updateNavigation, addIntroductionTopic, removeIntroductionTopic, addBrandValue, removeBrandValue, addPersonaItem, removePersonaItem, addColor, removeColor, addColorGuideline, removeColorGuideline, addApplicationItem, removeApplicationItem, addDownloadItem, removeDownloadItem, addTeamMember, removeTeamMember, loadProject, saveProject, ...projectData } = state;
 
     try {

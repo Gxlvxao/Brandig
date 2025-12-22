@@ -6,7 +6,7 @@ import IndexSection from '@/components/IndexSection';
 import IntroductionSection from '@/components/IntroductionSection';
 import AboutBrandSection from '@/components/AboutBrandSection';
 import BrandSection from '@/components/BrandSection';
-import PersonasSection from '@/components/PersonasSection'; // Novo Import
+import PersonasSection from '@/components/PersonasSection';
 import IdentitySection from '@/components/IdentitySection';
 import TypographySection from '@/components/TypographySection';
 import ColorsSection from '@/components/ColorsSection';
@@ -14,17 +14,15 @@ import ApplicationSection from '@/components/ApplicationSection';
 import DownloadsSection from '@/components/DownloadsSection';
 import CreditsSection from '@/components/CreditsSection';
 import AmbientGlow from '@/components/AmbientGlow';
-import { useAudio } from '@/hooks/useAudio';
 import { BrandEditor } from '@/components/editor/BrandEditor';
+
+import GlobalStyle from '@/components/GlobalStyle'; // <--- O IMPORT QUE FALTAVA
 import { useBrandStore } from '@/store/useBrandStore';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const ProjectView = () => {
   const { slug } = useParams();
-
-  const { isPlaying, toggle } = useAudio('/ambient-sound.mp3');
   const loadProject = useBrandStore((state) => state.loadProject);
-  
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
@@ -35,12 +33,13 @@ const ProjectView = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
+      {/* Componente Global de Estilos (Fontes) - AQUI ESTAVA O ERRO */}
+      <GlobalStyle />
+      
       <AmbientGlow />
       
-      <Navigation 
-        onSoundToggle={toggle}
-        isSoundEnabled={isPlaying}
-      />
+      
+      <Navigation />
       
       <main className="relative z-10">
         <HeroSection />
@@ -71,7 +70,7 @@ const ProjectView = () => {
         <footer className="section-padding border-t border-border/50">
           <div className="content-container text-center">
             <p className="text-sm text-muted-foreground">
-              © 2024 Sensorial. Todos os direitos reservados.
+              © 2025 MaxSell. Todos os direitos reservados.
             </p>
           </div>
         </footer>

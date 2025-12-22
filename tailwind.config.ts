@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        // ALTERADO: Agora usa as variáveis CSS em vez de nomes fixos
+        // A MÁGICA ACONTECE AQUI:
+        // Usamos variáveis CSS para que o GlobalStyle possa controlar a fonte
         heading: ['var(--font-heading)', 'sans-serif'],
         body: ['var(--font-body)', 'sans-serif'],
       },
