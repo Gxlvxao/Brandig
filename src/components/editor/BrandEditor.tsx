@@ -406,8 +406,9 @@ export const BrandEditor = () => {
                  </div>
               </TabsContent>
 
-              {/* 6. CORES */}
+              {/* 6. CORES - ATUALIZADO */}
               <TabsContent value="colors" className="space-y-8">
+                {/* Paleta Principal */}
                 <div className="space-y-6">
                   <div className="flex justify-between items-center border-b pb-4">
                     <h3 className="text-2xl font-medium">Paleta Principal</h3>
@@ -428,9 +429,35 @@ export const BrandEditor = () => {
                       </div>
                     ))}
                   </div>
-                  <p className="text-sm text-muted-foreground italic">* O sistema gera automaticamente as variações de opacidade.</p>
+                  <p className="text-sm text-muted-foreground italic">* O sistema gera automaticamente as variações de opacidade (Chapa 5).</p>
                 </div>
-                <div className="space-y-6 pt-4">
+
+                {/* Paleta Secundária (NOVA) */}
+                <div className="space-y-6 pt-4 border-t">
+                  <div className="flex justify-between items-center border-b pb-4">
+                    <h3 className="text-2xl font-medium">Paleta Secundária</h3>
+                    <Button onClick={store.addSecondaryColor} variant="outline"><Plus className="w-4 h-4 mr-2"/> Adicionar Cor</Button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {(store.colors.secondaryColors || []).map((color, index) => (
+                      <div key={index} className="p-4 border rounded-xl space-y-4 bg-card shadow-sm relative group">
+                        <Button size="icon" variant="destructive" className="absolute -top-2 -right-2 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10" onClick={() => store.removeSecondaryColor(index)}><Trash2 className="w-4 h-4"/></Button>
+                        <div className="flex items-center gap-4">
+                          <div className="relative cursor-pointer shrink-0">
+                             {/* Visualização da cor */}
+                             <div className="w-16 h-16 rounded-2xl border shadow-sm" style={{ backgroundColor: color.hex }} />
+                             <input type="color" value={color.hex} onChange={(e) => { const newColors = [...(store.colors.secondaryColors || [])]; newColors[index] = { ...color, hex: e.target.value }; store.updateColors({ secondaryColors: newColors }); }} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+                          </div>
+                          <div className="flex-1 space-y-1"><Label className="text-xs text-muted-foreground">Nome</Label><Input value={color.name} className="font-bold" onChange={(e) => { const newColors = [...(store.colors.secondaryColors || [])]; newColors[index] = { ...color, name: e.target.value }; store.updateColors({ secondaryColors: newColors }); }} /></div>
+                        </div>
+                        <Input value={color.usage} placeholder="Função da cor" onChange={(e) => { const newColors = [...(store.colors.secondaryColors || [])]; newColors[index] = { ...color, usage: e.target.value }; store.updateColors({ secondaryColors: newColors }); }} />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-muted-foreground italic">* O sistema gera automaticamente o degradê para branco na visualização.</p>
+                </div>
+
+                <div className="space-y-6 pt-4 border-t">
                   <div className="flex justify-between items-center border-b pb-2"><h3 className="text-2xl font-medium">Diretrizes</h3><Button size="sm" variant="outline" onClick={store.addColorGuideline}><Plus className="w-3 h-3 mr-1"/> Add</Button></div>
                   <div className="space-y-3">
                     {store.colors.usageGuidelines.map((item, idx) => (
@@ -458,8 +485,8 @@ export const BrandEditor = () => {
                     
                     {/* FONTES EXTRAS */}
                     <div className="space-y-6 pt-6 border-t mt-6">
-                       <div className="flex justify-between items-center"><h3 className="font-heading text-xl">Outras Fontes</h3><Button size="sm" variant="outline" onClick={() => { const currentExtras = store.typography.extraFonts || []; store.updateTypography({ extraFonts: [...currentExtras, { name: 'Nova Fonte', url: '' }] }); }}><Plus className="w-4 h-4 mr-2"/> Adicionar</Button></div>
-                       <div className="space-y-4">
+                        <div className="flex justify-between items-center"><h3 className="font-heading text-xl">Outras Fontes</h3><Button size="sm" variant="outline" onClick={() => { const currentExtras = store.typography.extraFonts || []; store.updateTypography({ extraFonts: [...currentExtras, { name: 'Nova Fonte', url: '' }] }); }}><Plus className="w-4 h-4 mr-2"/> Adicionar</Button></div>
+                        <div className="space-y-4">
                           {(store.typography.extraFonts || []).map((font, idx) => (
                              <div key={idx} className="flex gap-4 items-end border p-4 rounded-lg bg-muted/20 relative group">
                                 <Button size="icon" variant="ghost" className="absolute top-2 right-2 text-destructive h-6 w-6" onClick={() => { const newExtras = [...(store.typography.extraFonts || [])]; newExtras.splice(idx, 1); store.updateTypography({ extraFonts: newExtras }); }}><Trash2 className="w-3 h-3"/></Button>
@@ -474,7 +501,7 @@ export const BrandEditor = () => {
                                 </div>
                              </div>
                           ))}
-                       </div>
+                        </div>
                     </div>
                  </div>
               </TabsContent>
@@ -485,13 +512,13 @@ export const BrandEditor = () => {
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {store.application.items.map((item, idx) => (
                       <div key={idx} className="p-6 border rounded-xl space-y-4 bg-card shadow-sm relative group">
-                         <Button size="icon" variant="ghost" className="absolute top-2 right-2 text-destructive opacity-0 group-hover:opacity-100" onClick={() => store.removeApplicationItem(idx)}><Trash2 className="w-4 h-4"/></Button>
-                         <div className="flex justify-between items-center pb-2 border-b">
-                            <Input value={item.number} className="w-16 font-mono text-sm bg-accent/10 text-accent text-center" onChange={(e) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, number: e.target.value }; store.updateApplication({ items: newItems }); }} />
-                            <Input value={item.title} className="h-8 font-bold w-full text-right border-none bg-transparent" onChange={(e) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, title: e.target.value }; store.updateApplication({ items: newItems }); }} />
-                         </div>
-                         <FileUpload label="Imagem" value={item.image} onChange={(val) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, image: val }; store.updateApplication({ items: newItems }); }} />
-                         <Input value={item.description} onChange={(e) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, description: e.target.value }; store.updateApplication({ items: newItems }); }} />
+                          <Button size="icon" variant="ghost" className="absolute top-2 right-2 text-destructive opacity-0 group-hover:opacity-100" onClick={() => store.removeApplicationItem(idx)}><Trash2 className="w-4 h-4"/></Button>
+                          <div className="flex justify-between items-center pb-2 border-b">
+                             <Input value={item.number} className="w-16 font-mono text-sm bg-accent/10 text-accent text-center" onChange={(e) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, number: e.target.value }; store.updateApplication({ items: newItems }); }} />
+                             <Input value={item.title} className="h-8 font-bold w-full text-right border-none bg-transparent" onChange={(e) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, title: e.target.value }; store.updateApplication({ items: newItems }); }} />
+                          </div>
+                          <FileUpload label="Imagem" value={item.image} onChange={(val) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, image: val }; store.updateApplication({ items: newItems }); }} />
+                          <Input value={item.description} onChange={(e) => { const newItems = [...store.application.items]; newItems[idx] = { ...item, description: e.target.value }; store.updateApplication({ items: newItems }); }} />
                       </div>
                     ))}
                  </div>
@@ -528,9 +555,9 @@ export const BrandEditor = () => {
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {store.credits.team.map((member, idx) => (
                       <div key={idx} className="flex gap-3 items-center group p-3 border rounded-lg bg-card/50 relative">
-                         <div className="flex-1"><Input value={member.role} onChange={(e) => { const newTeam = [...store.credits.team]; newTeam[idx] = { ...member, role: e.target.value }; store.updateCredits({ team: newTeam }); }} /></div>
-                         <div className="flex-1"><Input value={member.name} onChange={(e) => { const newTeam = [...store.credits.team]; newTeam[idx] = { ...member, name: e.target.value }; store.updateCredits({ team: newTeam }); }} /></div>
-                         <Button size="icon" variant="ghost" className="text-destructive h-8 w-8" onClick={() => store.removeTeamMember(idx)}><Trash2 className="w-3 h-3"/></Button>
+                          <div className="flex-1"><Input value={member.role} onChange={(e) => { const newTeam = [...store.credits.team]; newTeam[idx] = { ...member, role: e.target.value }; store.updateCredits({ team: newTeam }); }} /></div>
+                          <div className="flex-1"><Input value={member.name} onChange={(e) => { const newTeam = [...store.credits.team]; newTeam[idx] = { ...member, name: e.target.value }; store.updateCredits({ team: newTeam }); }} /></div>
+                          <Button size="icon" variant="ghost" className="text-destructive h-8 w-8" onClick={() => store.removeTeamMember(idx)}><Trash2 className="w-3 h-3"/></Button>
                       </div>
                     ))}
                  </div>

@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { api } from '@/lib/api'
 import { toast } from "sonner"
 
-// ... (Mantenha as interfaces HeroConfig, IndexConfig, IntroConfig, AboutBrandConfig iguais) ...
 interface HeroConfig {
   titleLine1: string
   titleLine2: string
@@ -44,7 +43,6 @@ interface AboutBrandConfig {
   quote: string
 }
 
-// --- NOVA ESTRUTURA DINÂMICA DE ESTRATÉGIA ---
 interface StrategyItem {
   title: string;
   description: string;
@@ -55,28 +53,24 @@ export type StrategyCardType = 'identity' | 'market' | 'text';
 export interface StrategyCard {
   id: string;
   type: StrategyCardType;
-  title: string; // Título do Card (ex: "Identidade", "Contexto")
+  title: string;
   
-  // Dados para o tipo 'identity'
   mission?: StrategyItem;
   vision?: StrategyItem;
   values?: StrategyItem;
   
-  // Dados para o tipo 'market'
   persona?: StrategyItem;
   pain?: StrategyItem;
   solution?: StrategyItem;
 
-  // Dados para o tipo 'text' (genérico)
   textBody?: string; 
 }
 
 interface BrandStrategyConfig {
   sectionNumber: string;
   title: string;
-  cards: StrategyCard[]; // Agora é uma lista!
+  cards: StrategyCard[];
 }
-// ----------------------------------------------------------
 
 interface IdentityConfig {
   sectionNumber: string
@@ -135,6 +129,8 @@ interface ColorsConfig {
   title: string
   primaryPaletteTitle: string
   primaryColors: ColorItem[]
+  secondaryPaletteTitle: string
+  secondaryColors: ColorItem[]
   usageTitle: string
   usageGuidelines: string[]
 }
@@ -211,7 +207,6 @@ interface BrandState {
   updateIntroduction: (data: Partial<IntroductionConfig>) => void
   updateAboutBrand: (data: Partial<AboutBrandConfig>) => void
   
-  // Actions de Estratégia Dinâmica
   updateBrandStrategy: (data: Partial<BrandStrategyConfig>) => void;
   addStrategyCard: (type: StrategyCardType) => void;
   removeStrategyCard: (id: string) => void;
@@ -230,6 +225,10 @@ interface BrandState {
   
   addColor: () => void
   removeColor: (index: number) => void
+  
+  addSecondaryColor: () => void
+  removeSecondaryColor: (index: number) => void
+
   addColorGuideline: () => void
   removeColorGuideline: (index: number) => void
 
@@ -294,7 +293,6 @@ export const useBrandStore = create<BrandState>((set, get) => ({
     quote: '"A verdadeira elegância está na simplicidade intencional."'
   },
 
-  // --- ESTRATÉGIA DINÂMICA (Lista de Cards) ---
   brandStrategy: {
     sectionNumber: '03',
     title: 'Estratégia',
@@ -317,7 +315,6 @@ export const useBrandStore = create<BrandState>((set, get) => ({
       }
     ]
   },
-  // --------------------------------------------
 
   identity: {
     sectionNumber: '04',
@@ -385,6 +382,14 @@ export const useBrandStore = create<BrandState>((set, get) => ({
         usage: 'Destaque e acentos',
       }
     ],
+    secondaryPaletteTitle: 'Paleta Secundária',
+    secondaryColors: [
+      {
+        name: 'Cinza Neutro',
+        hex: '#808080',
+        usage: 'Elementos de apoio',
+      }
+    ],
     usageTitle: 'Diretrizes de Uso',
     usageGuidelines: [
       'O preto profundo é a base de toda a comunicação visual.',
@@ -440,7 +445,6 @@ export const useBrandStore = create<BrandState>((set, get) => ({
   updateIntroduction: (data) => set((state) => ({ introduction: { ...state.introduction, ...data } })),
   updateAboutBrand: (data) => set((state) => ({ aboutBrand: { ...state.aboutBrand, ...data } })),
   
-  // ACTIONS DA ESTRATÉGIA (DINÂMICA)
   updateBrandStrategy: (data) => set((state) => ({ brandStrategy: { ...state.brandStrategy, ...data } })),
   
   addStrategyCard: (type) => set((state) => {
@@ -448,7 +452,6 @@ export const useBrandStore = create<BrandState>((set, get) => ({
       id: crypto.randomUUID(), 
       type,
       title: type === 'identity' ? 'Nova Identidade' : type === 'market' ? 'Novo Contexto' : 'Novo Texto',
-      // Preenche defaults vazios
       mission: { title: 'Missão', description: '' },
       vision: { title: 'Visão', description: '' },
       values: { title: 'Valores', description: '' },
@@ -496,6 +499,13 @@ export const useBrandStore = create<BrandState>((set, get) => ({
     return { colors: { ...state.colors, primaryColors: newList } };
   }),
 
+  addSecondaryColor: () => set((state) => ({ colors: { ...state.colors, secondaryColors: [...state.colors.secondaryColors, { name: "Nova Cor Secundária", hex: "#888888", usage: "Uso Secundário" }] } })),
+  removeSecondaryColor: (index) => set((state) => {
+    const newList = [...state.colors.secondaryColors];
+    newList.splice(index, 1);
+    return { colors: { ...state.colors, secondaryColors: newList } };
+  }),
+
   addColorGuideline: () => set((state) => ({ colors: { ...state.colors, usageGuidelines: [...state.colors.usageGuidelines, "Nova diretriz"] } })),
   removeColorGuideline: (index) => set((state) => {
     const newList = [...state.colors.usageGuidelines];
@@ -538,13 +548,13 @@ export const useBrandStore = create<BrandState>((set, get) => ({
 
   saveProject: async (slug: string) => {
     const state = get();
-    // Destructure para remover funções antes de salvar
     const { 
         isEditorMode, toggleEditorMode, updateHero, updateIndexSection, updateIntroduction, 
         updateAboutBrand, updateBrandStrategy, addStrategyCard, removeStrategyCard, updateStrategyCard, 
         updateIdentity, updateTypography, 
         updateColors, updateApplication, updateDownloads, updateCredits, updateNavigation, 
-        addIntroductionTopic, removeIntroductionTopic, addColor, removeColor, 
+        addIntroductionTopic, removeIntroductionTopic, 
+        addColor, removeColor, addSecondaryColor, removeSecondaryColor,
         addColorGuideline, removeColorGuideline, addApplicationItem, removeApplicationItem, 
         addDownloadItem, removeDownloadItem, addTeamMember, removeTeamMember, 
         loadProject, saveProject, 
