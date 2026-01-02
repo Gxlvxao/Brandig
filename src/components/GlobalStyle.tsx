@@ -76,3 +76,5 @@ const GlobalStyle = () => {
 };
 
 export default GlobalStyle;
+
+//FRIST 
